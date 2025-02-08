@@ -1,4 +1,4 @@
-import { GameObjects, Scene } from "phaser";
+import { Game, GameObjects, Scene } from "phaser";
 
 import { EventBus } from "../EventBus";
 
@@ -17,8 +17,10 @@ export class MainMenu extends Scene {
 
         this.logo = this.add.image(512, 300, "logo").setDepth(100);
 
-        this.title = this.add
-            .text(512, 460, "Main Menu", {
+        EventBus.emit("current-scene-ready", this);
+
+        this.clickButton = this.add
+            .text(400, 460, "Start Game", {
                 fontFamily: "Arial Black",
                 fontSize: 38,
                 color: "#ffffff",
@@ -26,10 +28,11 @@ export class MainMenu extends Scene {
                 strokeThickness: 8,
                 align: "center",
             })
-            .setOrigin(0.5)
-            .setDepth(100);
+            .setInteractive({ useHandCursor: true })
 
-        EventBus.emit("current-scene-ready", this);
+            .on("pointerup", () => {
+                this.changeScene();
+            });
     }
 
     changeScene() {
