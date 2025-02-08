@@ -2,14 +2,17 @@ import durotarJSON from "../../../public/assets/durotar.json";
 import { Scene } from "phaser";
 import { LAYERS, SIZES, SPRITES, TILES } from "../utils/constants";
 import { Player } from "../entities/player";
+import { Enemy } from "../entities/enemy";
 
 export class Game extends Scene {
-    private player?: Player;
+    private player: Player;
+    private enemies: Phaser.Physics.Arcade.Group;
 
     constructor() {
         super("Game");
     }
 
+    // Предзагрузка ассетов
     preload() {
         this.load.setPath("assets");
         this.load.image(TILES.DUROTAR, "durotar.png");
@@ -19,9 +22,14 @@ export class Game extends Scene {
             frameWidth: SIZES.PLAYER.WIDTH,
             frameHeight: SIZES.PLAYER.HEIGHT,
         });
+        this.load.spritesheet(SPRITES.ENEMY, "characters/boar.png", {
+            frameWidth: SIZES.PLAYER.WIDTH,
+            frameHeight: SIZES.PLAYER.HEIGHT,
+        });
     }
 
     create() {
+        // Создание карты
         const map = this.make.tilemap({ key: "map" });
         const tileset = map.addTilesetImage(
             durotarJSON.tilesets[0].name,
@@ -29,10 +37,32 @@ export class Game extends Scene {
             SIZES.TILE,
             SIZES.TILE
         );
-        const groundLayer = map.createLayer(LAYERS.GROUND, tileset, 0, 0);
-        const wallsLayer = map.createLayer(LAYERS.WALLS, tileset, 0, 0);
+        // Создание слоев для карты
+        const groundLayer =
+            tileset && map.createLayer(LAYERS.GROUND, tileset, 0, 0);
+        const wallsLayer =
+            tileset && map.createLayer(LAYERS.WALLS, tileset, 0, 0);
 
+        // Создание игрока
         this.player = new Player(this, 400, 250, SPRITES.PLAYER);
+
+        // Создание группы для врагов
+        this.enemies = this.physics.add.group();
+
+        // Спавн врагов
+        this.time.addEvent({
+            delay: 1000, // Задержка между спавном врагов
+            callback: () => {
+                const enemy = new Enemy(
+                    this,
+                    Phaser.Math.Between(0, 500),
+                    Phaser.Math.Between(0, 400),
+                    SPRITES.ENEMY
+                );
+                this.enemies.add(enemy);
+            },
+            loop: true,
+        });
 
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setBounds(
@@ -50,8 +80,18 @@ export class Game extends Scene {
         );
         this.player.setCollideWorldBounds(true);
 
-        this.physics.add.collider(this.player, wallsLayer);
-        wallsLayer.setCollisionByExclusion([-1]);
+        wallsLayer && this.physics.add.collider(this.player, wallsLayer);
+        wallsLayer?.setCollisionByExclusion([-1]);
+
+        // Пример урона
+        this.input.keyboard.on("keydown-D", () => {
+            this.player.takeDamage(10); // Уменьшаем здоровье на 10
+        });
+
+        // Пример лечения
+        this.input.keyboard.on("keydown-H", () => {
+            this.player.heal(10); // Увеличиваем здоровье на 10
+        });
     }
 
     update(_: number, delta: number): void {

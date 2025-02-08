@@ -1,12 +1,22 @@
 // import { SPRITES } from "../utils/constants";
+import { PLAYER_HEALTH } from "../utils/constants";
 import { Entity } from "./entity";
 
 export class Player extends Entity {
     textureKey: string;
     private moveSpeed: number;
+    private health: number;
+    private maxHealth: number;
+    private healthBar: Phaser.GameObjects.Graphics;
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
         super(scene, x, y, texture);
+        this.health = PLAYER_HEALTH.HEALTH; // Начальное здоровье
+        this.maxHealth = PLAYER_HEALTH.MAX_HEALTH; // Максимальное здоровье
+
+        this.healthBar = scene.add.graphics();
+
+        this.drawHealthBar();
 
         const anims = this.scene.anims;
         const animsFrameRate = 9;
@@ -57,6 +67,41 @@ export class Player extends Entity {
         });
     }
 
+    private drawHealthBar(): void {
+        // Очищаем предыдущую графику
+        this.healthBar.clear();
+
+        // Рисуем фоновую полоску здоровья
+        this.healthBar.fillStyle(0x000000); // Черный цвет
+        this.healthBar.fillRect(this.x - 50, this.y + 30, 100, 10); // Позиция и размер
+
+        // Рисуем текущую полоску здоровья
+        const healthPercent = this.health / this.maxHealth;
+        this.healthBar.fillStyle(0xff0000); // Красный цвет
+        this.healthBar.fillRect(
+            this.x - 50,
+            this.y + 30,
+            100 * healthPercent,
+            10
+        ); // Позиция и размер
+    }
+
+    public takeDamage(amount: number): void {
+        this.health -= amount;
+        if (this.health < 0) {
+            this.health = 0;
+        }
+        this.drawHealthBar(); // Обновляем полоску здоровья
+    }
+
+    public heal(amount: number): void {
+        this.health += amount;
+        if (this.health > this.maxHealth) {
+            this.health = this.maxHealth;
+        }
+        this.drawHealthBar(); // Обновляем полоску здоровья
+    }
+
     update(delta: number) {
         const keys = this.scene.input.keyboard?.createCursorKeys();
         if (keys?.up.isDown) {
@@ -75,5 +120,7 @@ export class Player extends Entity {
             this.setVelocity(0, 0);
             this.stop();
         }
+
+        this.drawHealthBar();
     }
 }
