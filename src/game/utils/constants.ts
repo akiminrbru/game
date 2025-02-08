@@ -1,5 +1,5 @@
 export const TILES = {
-    DUROTAR: "durotar",
+    MAP: "map",
 };
 
 export const SIZES = {

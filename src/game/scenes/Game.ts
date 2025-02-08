@@ -1,4 +1,4 @@
-import mapJSON from "../../assets/mapV2.json";
+import mapJSON from "../../../public/assets/map.json";
 import { Scene } from "phaser";
 import { LAYERS, SIZES, SPRITES, TILES } from "../utils/constants";
 import { Player } from "../entities/player";
@@ -15,8 +15,8 @@ export class Game extends Scene {
     // Предзагрузка ассетов
     preload() {
         this.load.setPath("assets");
-        this.load.image(TILES.DUROTAR, "durotar.png");
-        this.load.tilemapTiledJSON("map", "durotar.json");
+        this.load.image(TILES.MAP, "map.png");
+        this.load.tilemapTiledJSON("map", "map.json");
 
         this.load.spritesheet(SPRITES.PLAYER, "characters/alliance.png", {
             frameWidth: SIZES.PLAYER.WIDTH,
@@ -33,25 +33,23 @@ export class Game extends Scene {
         const map = this.make.tilemap({ key: "map" });
         const tileset = map.addTilesetImage(
             mapJSON.tilesets[0].name,
-            TILES.DUROTAR,
+            TILES.MAP,
             SIZES.TILE,
             SIZES.TILE
         );
         // Создание слоев для карты
-        const groundLayer =
-            tileset && map.createLayer(LAYERS.GROUND, tileset, 0, 0);
-        const wallsLayer =
-            tileset && map.createLayer(LAYERS.WALLS, tileset, 0, 0);
+        const groundLayer = map.createLayer(LAYERS.GROUND, tileset, 0, 0);
+        const wallsLayer = map.createLayer(LAYERS.WALLS, tileset, 0, 0);
 
         // Создание игрока
-        this.player = new Player(this, 400, 250, SPRITES.PLAYER);
+        this.player = new Player(this, 450, 250, SPRITES.PLAYER);
 
         // Создание группы для врагов
         this.enemies = this.physics.add.group();
 
         // Спавн врагов
         this.time.addEvent({
-            delay: 100, // Задержка между спавном врагов
+            delay: 1000, // Задержка между спавном врагов
             callback: () => {
                 // Получаем позицию игрока
                 const playerX = this.player.x; // Предполагается, что у вас есть объект player
@@ -64,6 +62,10 @@ export class Game extends Scene {
                 const enemyY = playerY + Math.sin(angle) * radius;
 
                 const enemy = new Enemy(this, enemyX, enemyY, SPRITES.ENEMY);
+                enemy.setBounce(1);
+                enemy.setCollideWorldBounds(true);
+                // Чтобы враг не проходил сквозь стены
+                this.physics.add.collider(enemy, wallsLayer);
                 this.enemies.add(enemy);
             },
             loop: true,
@@ -92,8 +94,10 @@ export class Game extends Scene {
         // Чтобы игрок не заходил за границы мира
         this.player.setCollideWorldBounds(true);
 
-        wallsLayer && this.physics.add.collider(this.player, wallsLayer);
-        wallsLayer?.setCollisionByExclusion([-1]);
+        // Чтобы игрок не проходил сквозь стены
+        this.physics.add.collider(this.player, wallsLayer);
+
+        wallsLayer.setCollisionByExclusion([-1]);
 
         // Пример лечения
         this.input.keyboard.on("keydown-H", () => {
@@ -102,12 +106,11 @@ export class Game extends Scene {
     }
 
     update(_: number, delta: number): void {
-        this.player?.update(delta);
-
-        // Обновляем всех врагов
-        this.enemies.children.iterate((enemy: Enemy) => {
-            enemy.update(this.player); // Передаем игрока в метод update врага
-        });
+        const player = this.player;
+        player.update(delta);
+        this.enemies.children.iterate((enemy) => {
+            this.physics.moveToObject(enemy, player, 100);
+        }, this);
     }
 
     changeScene() {
