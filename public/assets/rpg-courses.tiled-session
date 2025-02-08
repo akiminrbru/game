@@ -1,0 +1,20 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+    },
+    "last.imagePath": "C:/Users/kinde/OneDrive/Рабочий стол/game/src/assets",
+    "map.lastUsedFormat": "json",
+    "openFiles": [
+    ],
+    "project": "rpg-courses.tiled-project",
+    "recentFiles": [
+    ],
+    "tileset.embedInMap": true,
+    "tileset.spacing": 1
+}
