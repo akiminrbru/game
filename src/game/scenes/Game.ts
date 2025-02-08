@@ -51,12 +51,22 @@ export class Game extends Scene {
 
         // Спавн врагов
         this.time.addEvent({
-            delay: 1000, // Задержка между спавном врагов
+            delay: 100, // Задержка между спавном врагов
             callback: () => {
                 const enemy = new Enemy(
                     this,
-                    Phaser.Math.Between(0, 500),
-                    Phaser.Math.Between(0, 400),
+                    Phaser.Math.Between(
+                        this.player.x - 500,
+                        this.player.x - 100
+                    ),
+                    Phaser.Math.Between(
+                        this.player.y - 500,
+                        this.player.y - 100
+                    ) ||
+                        Phaser.Math.Between(
+                            this.player.y + 100,
+                            this.player.y + 500
+                        ),
                     SPRITES.ENEMY
                 );
                 this.enemies.add(enemy);
