@@ -1,0 +1,38 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "map.json",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        "map.json": {
+            "scale": 0.125,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1008,
+                "y": -1272
+            }
+        },
+        "map.json#tiles2": {
+            "scaleInDock": 1
+        }
+    },
+    "last.imagePath": "C:/Users/kinde/OneDrive/Рабочий стол/game/public/assets",
+    "map.fixedSize": false,
+    "map.lastUsedFormat": "json",
+    "openFiles": [
+        "map.json"
+    ],
+    "project": "rpg-projects.tiled-project",
+    "recentFiles": [
+        "map.json"
+    ],
+    "tileset.embedInMap": true,
+    "tileset.spacing": 1
+}
