@@ -49,26 +49,22 @@ export class Game extends Scene {
         // Создание группы для врагов
         this.enemies = this.physics.add.group();
 
-        // Спавн врагов
+        // Спавн врагов старый и новый
+
         this.time.addEvent({
             delay: 100, // Задержка между спавном врагов
             callback: () => {
-                const enemy = new Enemy(
-                    this,
-                    Phaser.Math.Between(
-                        this.player.x - 500,
-                        this.player.x - 100
-                    ),
-                    Phaser.Math.Between(
-                        this.player.y - 500,
-                        this.player.y - 100
-                    ) ||
-                        Phaser.Math.Between(
-                            this.player.y + 100,
-                            this.player.y + 500
-                        ),
-                    SPRITES.ENEMY
-                );
+                // Получаем позицию игрока
+                const playerX = this.player.x; // Предполагается, что у вас есть объект player
+                const playerY = this.player.y;
+
+                // Генерируем случайные координаты вокруг игрока в радиусе 100 пикселей
+                const angle = Phaser.Math.FloatBetween(0, Math.PI * 2); // Случайный угол
+                const radius = Phaser.Math.Between(300, 600); // Радиус спавна
+                const enemyX = playerX + Math.cos(angle) * radius;
+                const enemyY = playerY + Math.sin(angle) * radius;
+
+                const enemy = new Enemy(this, enemyX, enemyY, SPRITES.ENEMY);
                 this.enemies.add(enemy);
             },
             loop: true,
@@ -94,7 +90,7 @@ export class Game extends Scene {
         wallsLayer?.setCollisionByExclusion([-1]);
 
         // Пример урона
-        this.input.keyboard.on("keydown-D", () => {
+        this.input.keyboard.on("keydown-G", () => {
             this.player.takeDamage(10); // Уменьшаем здоровье на 10
         });
 
@@ -106,6 +102,11 @@ export class Game extends Scene {
 
     update(_: number, delta: number): void {
         this.player?.update(delta);
+
+        // Обновляем всех врагов
+        this.enemies.children.iterate((enemy: Enemy) => {
+            enemy.update(this.player); // Передаем игрока в метод update врага
+        });
     }
 
     changeScene() {

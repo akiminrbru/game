@@ -101,22 +101,43 @@ export class Player extends Entity {
         }
         this.drawHealthBar(); // Обновляем полоску здоровья
     }
-
     update(delta: number) {
         const keys = this.scene.input.keyboard?.createCursorKeys();
-        if (keys?.up.isDown) {
+        const wKey = this.scene.input.keyboard?.addKey(
+            Phaser.Input.Keyboard.KeyCodes.W
+        );
+        const aKey = this.scene.input.keyboard?.addKey(
+            Phaser.Input.Keyboard.KeyCodes.A
+        );
+        const sKey = this.scene.input.keyboard?.addKey(
+            Phaser.Input.Keyboard.KeyCodes.S
+        );
+        const dKey = this.scene.input.keyboard?.addKey(
+            Phaser.Input.Keyboard.KeyCodes.D
+        );
+
+        // Перемещение вверх
+        if (keys?.up.isDown || wKey.isDown) {
             this.play("up", true);
             this.setVelocity(0, -delta * this.moveSpeed);
-        } else if (keys?.down.isDown) {
+        }
+        // Перемещение вниз
+        else if (keys?.down.isDown || sKey.isDown) {
             this.play("down", true);
             this.setVelocity(0, delta * this.moveSpeed);
-        } else if (keys?.left.isDown) {
+        }
+        // Перемещение влево
+        else if (keys?.left.isDown || aKey.isDown) {
             this.play("left", true);
             this.setVelocity(-delta * this.moveSpeed, 0);
-        } else if (keys?.right.isDown) {
+        }
+        // Перемещение вправо
+        else if (keys?.right.isDown || dKey.isDown) {
             this.play("right", true);
             this.setVelocity(delta * this.moveSpeed, 0);
-        } else {
+        }
+        // Остановка
+        else {
             this.setVelocity(0, 0);
             this.stop();
         }

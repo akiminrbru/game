@@ -26,7 +26,10 @@ export const App = () => {
 
             if (scene && scene.scene.key === "MainMenu") {
                 // Get the update logo position
-                scene.moveLogo(({ x, y }) => {
+                // scene.moveLogo(({ x, y }) => {
+                //     setSpritePosition({ x, y });
+                // });
+                scene.moveTitleText(({ x, y }) => {
                     setSpritePosition({ x, y });
                 });
             }
