@@ -58,7 +58,7 @@ export class Game extends Scene {
                 const playerX = this.player.x; // Предполагается, что у вас есть объект player
                 const playerY = this.player.y;
 
-                // Генерируем случайные координаты вокруг игрока в радиусе 100 пикселей
+                // Генерируем случайные координаты вокруг игрока в радиусе от 300 до 600 пикселей
                 const angle = Phaser.Math.FloatBetween(0, Math.PI * 2); // Случайный угол
                 const radius = Phaser.Math.Between(300, 600); // Радиус спавна
                 const enemyX = playerX + Math.cos(angle) * radius;

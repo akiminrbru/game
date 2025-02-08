@@ -1,4 +1,4 @@
-import { Game, GameObjects, Scene } from "phaser";
+import { GameObjects, Scene } from "phaser";
 
 import { EventBus } from "../EventBus";
 
@@ -13,7 +13,7 @@ export class MainMenu extends Scene {
     }
 
     create() {
-        this.background = this.add.image(512, 384, "background");
+        // this.background = this.add.image(512, 384, "background");
 
         EventBus.emit("current-scene-ready", this);
 
@@ -59,56 +59,5 @@ export class MainMenu extends Scene {
         }
 
         this.scene.start("Game");
-    }
-
-    // moveLogo(vueCallback: ({ x, y }: { x: number; y: number }) => void) {
-    //     if (this.logoTween) {
-    //         if (this.logoTween.isPlaying()) {
-    //             this.logoTween.pause();
-    //         } else {
-    //             this.logoTween.play();
-    //         }
-    //     } else {
-    //         this.logoTween = this.tweens.add({
-    //             targets: this.logo,
-    //             x: { value: 750, duration: 3000, ease: "Back.easeInOut" },
-    //             y: { value: 80, duration: 1500, ease: "Sine.easeOut" },
-    //             yoyo: true,
-    //             repeat: -1,
-    //             onUpdate: () => {
-    //                 if (vueCallback) {
-    //                     vueCallback({
-    //                         x: Math.floor(this.logo.x),
-    //                         y: Math.floor(this.logo.y),
-    //                     });
-    //                 }
-    //             },
-    //         });
-    //     }
-    // }
-    moveTitleText(vueCallback: ({ x, y }: { x: number; y: number }) => void) {
-        if (this.titleTextTween) {
-            if (this.titleTextTween.isPlaying()) {
-                this.titleTextTween.pause();
-            } else {
-                this.titleTextTween.play();
-            }
-        } else {
-            this.titleTextTween = this.tweens.add({
-                targets: this.titleText, // Изменено на titleText
-                x: { value: 750, duration: 3000, ease: "Back.easeInOut" },
-                y: { value: 80, duration: 1500, ease: "Sine.easeOut" },
-                yoyo: true,
-                repeat: -1,
-                onUpdate: () => {
-                    if (vueCallback) {
-                        vueCallback({
-                            x: Math.floor(this.titleText.x), // Изменено на titleText
-                            y: Math.floor(this.titleText.y), // Изменено на titleText
-                        });
-                    }
-                },
-            });
-        }
     }
 }
