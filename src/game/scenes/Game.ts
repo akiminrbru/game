@@ -49,8 +49,7 @@ export class Game extends Scene {
         // Создание группы для врагов
         this.enemies = this.physics.add.group();
 
-        // Спавн врагов старый и новый
-
+        // Спавн врагов
         this.time.addEvent({
             delay: 100, // Задержка между спавном врагов
             callback: () => {
@@ -70,7 +69,13 @@ export class Game extends Scene {
             loop: true,
         });
 
+        this.physics.add.collider(this.player, this.enemies, () => {
+            this.player.takeDamage(10);
+        });
+
+        // Чтобы камера следила за игроком
         this.cameras.main.startFollow(this.player);
+
         this.cameras.main.setBounds(
             0,
             0,
@@ -84,15 +89,11 @@ export class Game extends Scene {
             map.widthInPixels,
             map.heightInPixels
         );
+        // Чтобы игрок не заходил за границы мира
         this.player.setCollideWorldBounds(true);
 
         wallsLayer && this.physics.add.collider(this.player, wallsLayer);
         wallsLayer?.setCollisionByExclusion([-1]);
-
-        // Пример урона
-        this.input.keyboard.on("keydown-G", () => {
-            this.player.takeDamage(10); // Уменьшаем здоровье на 10
-        });
 
         // Пример лечения
         this.input.keyboard.on("keydown-H", () => {
