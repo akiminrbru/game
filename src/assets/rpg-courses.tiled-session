@@ -1,0 +1,26 @@
+{
+    "activeFile": "",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "Все файлы (*)",
+    "fileStates": {
+        "durotar.json": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 251,
+                "y": 289.5
+            }
+        },
+        "durotar.json#tiles": {
+            "scaleInDock": 1.5
+        }
+    },
+    "openFiles": [
+    ],
+    "project": "",
+    "recentFiles": [
+        "durotar.json"
+    ]
+}

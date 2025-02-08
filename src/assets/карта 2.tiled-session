@@ -1,0 +1,34 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "mapV2.tmj",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "mapV2.tmj": {
+            "scale": 0.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1958,
+                "y": -2002
+            }
+        },
+        "mapV2.tmj#tiles2": {
+            "scaleInDock": 1
+        }
+    },
+    "last.imagePath": "C:/Users/kinde/OneDrive/Рабочий стол/game/public/assets",
+    "map.fixedSize": false,
+    "map.lastUsedFormat": "json",
+    "openFiles": [
+        "mapV2.tmj"
+    ],
+    "project": "карта 2.tiled-project",
+    "recentFiles": [
+        "mapV2.tmj"
+    ],
+    "tileset.embedInMap": true,
+    "tileset.spacing": 1
+}
