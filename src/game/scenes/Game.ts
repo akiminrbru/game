@@ -1,4 +1,4 @@
-import durotarJSON from "../../../public/assets/durotar.json";
+import mapJSON from "../../assets/mapV2.json";
 import { Scene } from "phaser";
 import { LAYERS, SIZES, SPRITES, TILES } from "../utils/constants";
 import { Player } from "../entities/player";
@@ -32,7 +32,7 @@ export class Game extends Scene {
         // Создание карты
         const map = this.make.tilemap({ key: "map" });
         const tileset = map.addTilesetImage(
-            durotarJSON.tilesets[0].name,
+            mapJSON.tilesets[0].name,
             TILES.DUROTAR,
             SIZES.TILE,
             SIZES.TILE
@@ -113,4 +113,7 @@ export class Game extends Scene {
     changeScene() {
         this.scene.start("GameOver");
     }
+
+    // Определени дистанции между игроков и врагом
+    // const distanceToPlayer = Phaser.Math.Distance.Between(x,y,x , y)
 }
