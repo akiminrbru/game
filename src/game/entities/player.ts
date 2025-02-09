@@ -116,32 +116,68 @@ export class Player extends Entity {
             Phaser.Input.Keyboard.KeyCodes.D
         );
 
+        // Инициализация переменных для скорости
+        let velocityX = 0;
+        let velocityY = 0;
+        let isMoving = false;
+        let currentAnimation = "";
+
         // Перемещение вверх
         if (keys?.up.isDown || wKey.isDown) {
-            this.play("up", true);
-            this.setVelocity(0, -delta * this.moveSpeed);
-        }
-        // Перемещение вниз
-        else if (keys?.down.isDown || sKey.isDown) {
-            this.play("down", true);
-            this.setVelocity(0, delta * this.moveSpeed);
-        }
-        // Перемещение влево
-        else if (keys?.left.isDown || aKey.isDown) {
-            this.play("left", true);
-            this.setVelocity(-delta * this.moveSpeed, 0);
-        }
-        // Перемещение вправо
-        else if (keys?.right.isDown || dKey.isDown) {
-            this.play("right", true);
-            this.setVelocity(delta * this.moveSpeed, 0);
-        }
-        // Остановка
-        else {
-            this.setVelocity(0, 0);
-            this.stop();
+            velocityY = -delta * this.moveSpeed;
         }
 
+        // Перемещение вниз
+        if (keys?.down.isDown || sKey.isDown) {
+            velocityY = delta * this.moveSpeed;
+        }
+
+        // Перемещение влево
+        if (keys?.left.isDown || aKey.isDown) {
+            velocityX = -delta * this.moveSpeed;
+        }
+
+        // Перемещение вправо
+        if (keys?.right.isDown || dKey.isDown) {
+            velocityX = delta * this.moveSpeed;
+        }
+
+        // Нормализация скорости для предотвращения увеличения скорости при диагональном движении
+        const totalVelocity = Math.sqrt(
+            velocityX * velocityX + velocityY * velocityY
+        );
+        if (totalVelocity > this.moveSpeed) {
+            velocityX = (velocityX / totalVelocity) * this.moveSpeed;
+            velocityY = (velocityY / totalVelocity) * this.moveSpeed;
+        }
+
+        // Установка анимации в зависимости от направления
+        if (velocityX !== 0 || velocityY !== 0) {
+            isMoving = true; // Устанавливаем состояние движения
+
+            if (velocityX < 0) {
+                this.play("left", true);
+                currentAnimation = "left";
+            } else if (velocityX > 0) {
+                this.play("right", true);
+                currentAnimation = "right";
+            } else if (velocityY < 0) {
+                this.play("up", true);
+                currentAnimation = "up";
+            } else if (velocityY > 0) {
+                this.play("down", true);
+                currentAnimation = "down";
+            }
+        } else {
+            this.stop();
+            isMoving = false; // Сброс состояния движения
+            currentAnimation = ""; // Сброс текущей анимации
+        }
+
+        // Установка скорости
+        this.setVelocity(velocityX * 5, velocityY * 5);
+
+        // Отрисовка полосы здоровья
         this.drawHealthBar();
     }
 }

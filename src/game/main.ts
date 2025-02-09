@@ -19,6 +19,10 @@ const config: Phaser.Types.Core.GameConfig = {
         },
     },
     pixelArt: true,
+    fps: {
+        target: 60, // Устанавливаем целевую частоту кадров
+        forceSetTimeOut: true, // Принудительно устанавливаем таймер
+    },
 };
 
 const StartGame = (parent: string) => {
