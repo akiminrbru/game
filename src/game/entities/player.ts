@@ -90,6 +90,7 @@ export class Player extends Entity {
         this.health -= amount;
         if (this.health < 0) {
             this.health = 0;
+            this.scene.scene.start("GameOver");
         }
         this.drawHealthBar(); // Обновляем полоску здоровья
     }
@@ -101,6 +102,7 @@ export class Player extends Entity {
         }
         this.drawHealthBar(); // Обновляем полоску здоровья
     }
+
     update(delta: number) {
         const keys = this.scene.input.keyboard?.createCursorKeys();
         const wKey = this.scene.input.keyboard?.addKey(
@@ -124,22 +126,52 @@ export class Player extends Entity {
 
         // Перемещение вверх
         if (keys?.up.isDown || wKey.isDown) {
-            velocityY = -delta * this.moveSpeed;
+            velocityY = -this.moveSpeed;
         }
 
         // Перемещение вниз
         if (keys?.down.isDown || sKey.isDown) {
-            velocityY = delta * this.moveSpeed;
+            velocityY = this.moveSpeed;
         }
 
         // Перемещение влево
         if (keys?.left.isDown || aKey.isDown) {
-            velocityX = -delta * this.moveSpeed;
+            velocityX = -this.moveSpeed;
         }
 
         // Перемещение вправо
         if (keys?.right.isDown || dKey.isDown) {
-            velocityX = delta * this.moveSpeed;
+            velocityX = this.moveSpeed;
+        }
+
+        // Проверка нажатия ЛКМ
+        if (this.scene.input.activePointer.isDown) {
+            const pointerX = this.scene.input.x; // Координата X курсора на экране
+            const pointerY = this.scene.input.y; // Координата Y курсора на экране
+
+            // Преобразование координат курсора в мировые координаты
+            const worldPoint = this.scene.cameras.main.getWorldPoint(
+                pointerX,
+                pointerY
+            );
+            const worldX = worldPoint.x; // Координата X курсора относительно карты
+            const worldY = worldPoint.y; // Координата Y курсора относительно карты
+
+            console.log(
+                `Координаты курсора относительно карты: X: ${worldX}, Y: ${worldY}`
+            );
+
+            // Вычисление угла между персонажем и курсором
+            const angle = Phaser.Math.Angle.Between(
+                this.x,
+                this.y,
+                worldX,
+                worldY
+            );
+
+            // Устанавливаем скорость в направлении курсора
+            velocityX += Math.cos(angle) * this.moveSpeed;
+            velocityY += Math.sin(angle) * this.moveSpeed;
         }
 
         // Нормализация скорости для предотвращения увеличения скорости при диагональном движении
@@ -155,18 +187,26 @@ export class Player extends Entity {
         if (velocityX !== 0 || velocityY !== 0) {
             isMoving = true; // Устанавливаем состояние движения
 
-            if (velocityX < 0) {
-                this.play("left", true);
-                currentAnimation = "left";
-            } else if (velocityX > 0) {
-                this.play("right", true);
-                currentAnimation = "right";
-            } else if (velocityY < 0) {
-                this.play("up", true);
-                currentAnimation = "up";
-            } else if (velocityY > 0) {
-                this.play("down", true);
-                currentAnimation = "down";
+            console.log(`Player coordinates: X: ${this.x}, Y: ${this.y}`);
+
+            if (Math.abs(velocityX) > Math.abs(velocityY)) {
+                // Движение влево или вправо
+                if (velocityX < 0) {
+                    this.play("left", true);
+                    currentAnimation = "left";
+                } else {
+                    this.play("right", true);
+                    currentAnimation = "right";
+                }
+            } else {
+                // Движение вверх или вниз
+                if (velocityY < 0) {
+                    this.play("up", true);
+                    currentAnimation = "up";
+                } else {
+                    this.play("down", true);
+                    currentAnimation = "down";
+                }
             }
         } else {
             this.stop();
